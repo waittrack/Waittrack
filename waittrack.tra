@@ -1,0 +1,31 @@
+*** Creating Trace Output File 'waittrack.tra' Ok.
+### Preparing for ADS-LD.
+### Creating ADS-LD Command Line
+### List of Objects: adding '"startup_stm32f4xx.o"'
+### List of Objects: adding '"stm32f4xx_it.o"'
+### List of Objects: adding '"system_stm32f4xx.o"'
+### List of Objects: adding '"retarget.o"'
+### List of Objects: adding '"main.o"'
+### List of Objects: adding '"stm32f4_discovery.o"'
+### List of Objects: adding '"stm32f4xx_adc.o"'
+### List of Objects: adding '"misc.o"'
+### List of Objects: adding '"stm32f4xx_exti.o"'
+### List of Objects: adding '"stm32f4xx_gpio.o"'
+### List of Objects: adding '"stm32f4xx_rcc.o"'
+### List of Objects: adding '"stm32f4xx_syscfg.o"'
+### List of Objects: adding '"stm32f4xx_usart.o"'
+### ADS-LD Command completed:
+--cpu Cortex-M4.fp "startup_stm32f4xx.o" "stm32f4xx_it.o" "system_stm32f4xx.o" "retarget.o" "main.o" "stm32f4_discovery.o" "stm32f4xx_adc.o" "misc.o" "stm32f4xx_exti.o" "stm32f4xx_gpio.o" "stm32f4xx_rcc.o" "stm32f4xx_syscfg.o" "stm32f4xx_usart.o" --library_type=microlib --strict --scatter "waittrack.sct" 
+--summary_stderr --info summarysizes --map --xref --callgraph --symbols 
+--info sizes --info totals --info unused --info veneers 
+ --list ".\waittrack.map" -o "waittrack.axf"### Preparing Environment (PrepEnvAds)
+### ADS-LD Output File: 'waittrack.axf'
+### ADS-LD Command File: 'waittrack.lnp'
+### Checking for dirty Components...
+### Creating CmdFile 'waittrack.lnp', Handle=0x00000A04
+### Writing '.lnp' file
+### ADS-LD Command file 'waittrack.lnp' is ready.
+### ADS-LD: About to start ADS-LD Thread.
+### ADS-LD: executed with 0 errors
+### Updating obj list
+### LDADS_file() completed.
