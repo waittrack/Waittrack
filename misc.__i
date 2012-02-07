@@ -1,0 +1,1 @@
+-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork -I..\Waittrack -I.\STM32F4xx_StdPeriph_Driver\inc -I.\STM32F4_Discovery -I.\CMSIS\ST\STM32F4xx\Include -I.\CMSIS\Include -I "C:\Keil\ARM\CMSIS\Include" -I "C:\Keil\ARM\INC\ST\STM32F4xx" -DUSE_STDPERIPH_DRIVER -DSTM32F4XX -o "misc.o" --omf_browse "misc.crf" --depend "misc.d" "STM32F4xx_StdPeriph_Driver\src\misc.c"

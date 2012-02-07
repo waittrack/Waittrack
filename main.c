@@ -22,6 +22,10 @@ NVIC_InitTypeDef NVIC_InitStructure2;
 
 char c[10];
 int i = 0;
+const int THRESHOLD = 819;
+int num_people = 0;		
+int ir1_flag = 0;
+int ir2_flag = 0;
 
 void delay(int a)
 {
@@ -313,12 +317,28 @@ void USART2_IRQHandler(void)
   }
 }
 
+void WritePeople(void)
+{
+    if(num_people < 0)
+	  num_people = 0;
+
+    printf("%c",0x00);
+	printf("%c",0x80); // "write"
+	printf("%c",0x02); // to address 2
+	printf("%c",num_people); // the value 6s
+}
+
 int main(void)
 {
+    int var_d1;
+	int var_d2;
 	char ADC_Value[30];
-	uint16_t converted_value = 0;
+	uint16_t ir1_value = 0;
+	uint16_t ir2_value = 0;
 	uint16_t old_value = 0;
 	int j = 0;
+	var_d1 = 0;
+	var_d2 = 0;
 
 	//initialization
 	TurnOffBuffers();
@@ -338,21 +358,11 @@ int main(void)
 	printf("%c",0x00);
 	printf("%c",0x80); // "write"
 	printf("%c",0x02); // to address 2
-	printf("%c",0x08); // the value 6s
-
-	/*while(1)
-	{
-	  while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
-	  {
-	
-	
-	  }
-			
-	}*/
+	printf("%c",num_people); // the value 6s
 
 	openLCD();
-	putcLCD('A');
-	putsLCD("Hello!");
+	//putcLCD('A');
+	//putsLCD("Hello!");
 
 	//configure ADC
 	ADC_Common_Config();
@@ -364,20 +374,110 @@ int main(void)
 	ADC3_Config();
 
 	//start conversion on ADC2
-	ADC_SoftwareStartConv(ADC2);	
-	delay(3);
-	converted_value = ADC_GetConversionValue(ADC2);	
+	//ADC_SoftwareStartConv(ADC2);	
+	//delay(3);
+	//IR1_value = ADC_GetConversionValue(ADC2);	
 	//convert ADC value into a char array
-	sprintf(ADC_Value, "%d", converted_value); 
-	putsLCD(ADC_Value);
+	//sprintf(ADC_Value, "%d", IR1_value); 
+	//putsLCD(ADC_Value);
 
 
 	//start conversion on ADC3
-	ADC_SoftwareStartConv(ADC3);
-	delay(3);
-	converted_value = ADC_GetConversionValue(ADC3);	
+	//ADC_SoftwareStartConv(ADC3);
+	//delay(3);
+	//IR2_value = ADC_GetConversionValue(ADC3);	
 	//convert ADC value into a char array
-	sprintf(ADC_Value, "%d", converted_value); 
-	putsLCD(ADC_Value);
+	//sprintf(ADC_Value, "%d", IR2_value); 
+	//putsLCD(ADC_Value);
+
+	while(1)
+	{
+	  while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
+	  {
+		 ADC_SoftwareStartConv(ADC2);	
+	     delay(3);
+	     ir1_value = ADC_GetConversionValue(ADC2);
+		 //sprintf(ADC_Value, "%d", ir1_value); 
+		 //putsLCD(ADC_Value);
+		 //putsLCD(" ");
+		 delay(3);
+		 ADC_SoftwareStartConv(ADC3);
+	     delay(3);
+	     ir2_value = ADC_GetConversionValue(ADC3);	
+		 //sprintf(ADC_Value, "%d", ir2_value); 
+		 //putsLCD(ADC_Value);
+
+	     if (ir1_value > THRESHOLD && ir2_value < THRESHOLD && ir1_flag == 0) //person has tripped first sensor
+		 {
+		    ir1_flag = 1; //place a flag so you can't make repeated readings
+			if(var_d2 == 1) //second sensor is already high and person has moved past it
+  			{
+			  num_people--;
+			  var_d1 = 0;
+    		  var_d2 = 0;
+			  WritePeople();
+  			}
+  			else if(var_d2 == 0) //new person OR two people have walked by another and the person is now leaving (1 sensor hit)
+  			{
+    		  var_d1 = 1;
+  			} 
+		 }
+		 else if (ir1_value < THRESHOLD && ir2_value > THRESHOLD && ir2_flag == 0) //person has tripped second sensor
+		 {
+		    ir2_flag = 1;
+ 		    if(var_d1 == 1) //first sensor is already high and person is past it
+  			{
+			  num_people++;
+    		  var_d1 = 0;
+    		  var_d2 = 0;
+			  WritePeople();
+  			}
+ 			else if(var_d1 == 0) //new person
+  			{
+   			  var_d2 = 1;
+  			}
+		 }
+		 else if (ir1_value > THRESHOLD && ir2_value > THRESHOLD && ir1_flag == 0 && ir2_flag == 0) //both distance sensors high
+		{
+  			if(var_d1 == 1) //person has walked past first sensor already and there is someone directly behind him
+ 			{
+			  ir2_flag = 1;
+			  num_people++;
+			  var_d1 = 1;
+			  var_d2 = 0;
+			  WritePeople();
+  			}
+  			else if(var_d2 == 1) //person has walked past second sensor and there is someone leaving behind him
+  			{
+			  ir1_flag = 1;
+    		  num_people--;
+			  var_d1 = 0;
+			  var_d2 = 1;
+			  WritePeople();
+  			}
+		}
+		
+		if (ir1_value < THRESHOLD && ir1_flag == 1) //both distance sensors high
+		   ir1_flag = 0;
+		if (ir2_value < THRESHOLD && ir2_flag == 1)
+		   ir2_flag = 0;
+
+
+	  }		
+		 /* putsLCD("   ");
+		 ADC_SoftwareStartConv(ADC2);	
+	     delay(3);
+		 sprintf(ADC_Value, "%d", var_d1); 
+		 putsLCD(ADC_Value);
+		 
+		 ADC_SoftwareStartConv(ADC3);
+	     delay(3);
+	     ir2_value = ADC_GetConversionValue(ADC3);	
+		 sprintf(ADC_Value, "%d", var_d2); 
+		 putsLCD(ADC_Value);
+		 putsLCD("   ");
+	     cmd2LCD(0x01);	   */
+		 delay(20);
+	}
 
 }
