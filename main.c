@@ -82,7 +82,7 @@ void ADC3_Config(void)
   	ADC_Init(ADC3, &ADC_InitStructure);
 
 	/* ADC3 regular channel12 configuration *************************************/
-  	ADC_RegularChannelConfig(ADC3, ADC_Channel_12, 1, ADC_SampleTime_3Cycles);
+  	ADC_RegularChannelConfig(ADC3, ADC_Channel_12, 1, ADC_SampleTime_84Cycles);
 
 	/* Enable ADC3 */
  	 ADC_Cmd(ADC3, ENABLE);
@@ -110,7 +110,7 @@ void ADC2_Config(void)
   	ADC_Init(ADC2, &ADC_InitStructure);
 
 	/* ADC2 regular channel14 configuration *************************************/
-  	ADC_RegularChannelConfig(ADC2, ADC_Channel_14, 1, ADC_SampleTime_3Cycles);
+  	ADC_RegularChannelConfig(ADC2, ADC_Channel_14, 1, ADC_SampleTime_84Cycles);
 
 	/* Enable ADC2 */
  	 ADC_Cmd(ADC2, ENABLE);
@@ -478,6 +478,7 @@ int main(void)
 		 putsLCD("   ");
 	     cmd2LCD(0x01);	   */
 		 delay(20);
+		 
 	}
 
 }
