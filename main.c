@@ -22,10 +22,12 @@ NVIC_InitTypeDef NVIC_InitStructure2;
 
 char c[10];
 int i = 0;
-const int THRESHOLD = 819;
+const int THRESHOLD = 1200;
 int num_people = 0;		
 int ir1_flag = 0;
 int ir2_flag = 0;
+int ir1_count = 0;
+int ir2_count = 0;
 
 void delay(int a)
 {
@@ -75,14 +77,14 @@ void ADC3_Config(void)
 	//initialize ADC3
 	ADC_InitStructure.ADC_Resolution = ADC_Resolution_12b;
   	ADC_InitStructure.ADC_ScanConvMode = DISABLE;
-  	ADC_InitStructure.ADC_ContinuousConvMode = ENABLE;
+  	ADC_InitStructure.ADC_ContinuousConvMode = DISABLE;
   	ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
   	ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;
   	ADC_InitStructure.ADC_NbrOfConversion = 1;
   	ADC_Init(ADC3, &ADC_InitStructure);
 
 	/* ADC3 regular channel12 configuration *************************************/
-  	ADC_RegularChannelConfig(ADC3, ADC_Channel_12, 1, ADC_SampleTime_84Cycles);
+  	ADC_RegularChannelConfig(ADC3, ADC_Channel_12, 1, ADC_SampleTime_480Cycles);
 
 	/* Enable ADC3 */
  	 ADC_Cmd(ADC3, ENABLE);
@@ -103,14 +105,14 @@ void ADC2_Config(void)
 	//initialize ADC2
 	ADC_InitStructure.ADC_Resolution = ADC_Resolution_12b;
   	ADC_InitStructure.ADC_ScanConvMode = DISABLE;
-  	ADC_InitStructure.ADC_ContinuousConvMode = ENABLE;
+  	ADC_InitStructure.ADC_ContinuousConvMode = DISABLE;
   	ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
   	ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;
   	ADC_InitStructure.ADC_NbrOfConversion = 1;
   	ADC_Init(ADC2, &ADC_InitStructure);
 
 	/* ADC2 regular channel14 configuration *************************************/
-  	ADC_RegularChannelConfig(ADC2, ADC_Channel_14, 1, ADC_SampleTime_84Cycles);
+  	ADC_RegularChannelConfig(ADC2, ADC_Channel_14, 1, ADC_SampleTime_480Cycles);
 
 	/* Enable ADC2 */
  	 ADC_Cmd(ADC2, ENABLE);
@@ -373,23 +375,6 @@ int main(void)
 	//configure ADC3
 	ADC3_Config();
 
-	//start conversion on ADC2
-	//ADC_SoftwareStartConv(ADC2);	
-	//delay(3);
-	//IR1_value = ADC_GetConversionValue(ADC2);	
-	//convert ADC value into a char array
-	//sprintf(ADC_Value, "%d", IR1_value); 
-	//putsLCD(ADC_Value);
-
-
-	//start conversion on ADC3
-	//ADC_SoftwareStartConv(ADC3);
-	//delay(3);
-	//IR2_value = ADC_GetConversionValue(ADC3);	
-	//convert ADC value into a char array
-	//sprintf(ADC_Value, "%d", IR2_value); 
-	//putsLCD(ADC_Value);
-
 	while(1)
 	{
 	  while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
@@ -407,37 +392,59 @@ int main(void)
 		 //sprintf(ADC_Value, "%d", ir2_value); 
 		 //putsLCD(ADC_Value);
 
-	     if (ir1_value > THRESHOLD && ir2_value < THRESHOLD && ir1_flag == 0) //person has tripped first sensor
+		 if (ir1_count > 0)
+		    ir1_count++;
+		 if (ir2_count > 0)
+		    ir2_count++;
+
+	     if (ir1_value > THRESHOLD && ir2_value < THRESHOLD) //person has tripped first sensor
 		 {
-		    ir1_flag = 1; //place a flag so you can't make repeated readings
+			
+			if (ir1_count == 0)
+				ir1_count = 1;
 			if(var_d2 == 1) //second sensor is already high and person has moved past it
   			{
 			  num_people--;
 			  var_d1 = 0;
     		  var_d2 = 0;
+			  ir1_count =0;
+			  ir2_count = 0;
+			  ir1_flag = 1;
 			  WritePeople();
+			  sprintf(ADC_Value, "%d", num_people);
+			  putsLCD(ADC_Value);
+			  putsLCD(" ");
   			}
   			else if(var_d2 == 0) //new person OR two people have walked by another and the person is now leaving (1 sensor hit)
   			{
-    		  var_d1 = 1;
+			  if(ir1_count >= 5 && ir1_flag == 0)
+    		  	var_d1 = 1;
   			} 
 		 }
-		 else if (ir1_value < THRESHOLD && ir2_value > THRESHOLD && ir2_flag == 0) //person has tripped second sensor
+		 else if (ir1_value < THRESHOLD && ir2_value > THRESHOLD ) //person has tripped second sensor
 		 {
-		    ir2_flag = 1;
+			if (ir2_count == 0)
+				ir2_count = 1;
  		    if(var_d1 == 1) //first sensor is already high and person is past it
   			{
 			  num_people++;
     		  var_d1 = 0;
     		  var_d2 = 0;
+			  ir2_flag = 1;
 			  WritePeople();
+			  ir1_count =0;
+			  ir2_count = 0;
+			  sprintf(ADC_Value, "%d", num_people);
+			  putsLCD(ADC_Value);
+			  putsLCD(" ");
   			}
  			else if(var_d1 == 0) //new person
   			{
-   			  var_d2 = 1;
+			  if(ir2_count >= 5 && ir2_flag == 0)
+   			    var_d2 = 1;
   			}
 		 }
-		 else if (ir1_value > THRESHOLD && ir2_value > THRESHOLD && ir1_flag == 0 && ir2_flag == 0) //both distance sensors high
+		 else if (ir1_value > THRESHOLD && ir2_value > THRESHOLD ) //both distance sensors high
 		{
   			if(var_d1 == 1) //person has walked past first sensor already and there is someone directly behind him
  			{
@@ -446,6 +453,9 @@ int main(void)
 			  var_d1 = 1;
 			  var_d2 = 0;
 			  WritePeople();
+			  sprintf(ADC_Value, "%d", num_people);
+			  putsLCD(ADC_Value);
+			  putsLCD(" ");
   			}
   			else if(var_d2 == 1) //person has walked past second sensor and there is someone leaving behind him
   			{
@@ -454,18 +464,34 @@ int main(void)
 			  var_d1 = 0;
 			  var_d2 = 1;
 			  WritePeople();
+			  sprintf(ADC_Value, "%d", num_people);
+			  putsLCD(ADC_Value);
+			  putsLCD(" ");
   			}
 		}
-		
-		if (ir1_value < THRESHOLD && ir1_flag == 1) //both distance sensors high
+
+		if (ir1_value < THRESHOLD ) //both distance sensors high
+		{
 		   ir1_flag = 0;
-		if (ir2_value < THRESHOLD && ir2_flag == 1)
+		   ir1_count = 0;
+		}
+		if (ir2_value < THRESHOLD )
+		{
 		   ir2_flag = 0;
+		   ir2_count = 0;
+		}
 
 
 	  }		
-		 /* putsLCD("   ");
-		 ADC_SoftwareStartConv(ADC2);	
+		/*sprintf(ADC_Value, "%d", ir1_count);
+		putsLCD(ADC_Value);
+		putsLCD(" ");
+		sprintf(ADC_Value, "%d", ir2_count);
+		putsLCD(ADC_Value);
+		putsLCD("      ");*/
+
+		 // putsLCD("   ");
+		 /* ADC_SoftwareStartConv(ADC2);	
 	     delay(3);
 		 sprintf(ADC_Value, "%d", var_d1); 
 		 putsLCD(ADC_Value);
@@ -475,9 +501,9 @@ int main(void)
 	     ir2_value = ADC_GetConversionValue(ADC3);	
 		 sprintf(ADC_Value, "%d", var_d2); 
 		 putsLCD(ADC_Value);
-		 putsLCD("   ");
-	     cmd2LCD(0x01);	   */
-		 delay(20);
+		 putsLCD("   ");  */
+	     //cmd2LCD(0x01);	   
+		 delay(40);
 		 
 	}
 

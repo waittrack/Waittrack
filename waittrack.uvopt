@@ -147,23 +147,6 @@
           <Name>-O207 -S0 -C0 -FO7 -FD20000000 -FC800 -FN1 -FF0STM32F4xx_1024 -FS08000000 -FL0100000)</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
-      <Breakpoint>
-        <Bp>
-          <Number>0</Number>
-          <Type>0</Type>
-          <LineNumber>433</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134220186</Address>
-          <ByteObject>0</ByteObject>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename></Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\waittrack\main.c\433</Expression>
-        </Bp>
-      </Breakpoint>
       <DebugFlag>
         <trace>0</trace>
         <periodic>1</periodic>
@@ -222,7 +205,7 @@
       <Focus>0</Focus>
       <ColumnNumber>15</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>50</TopLine>
+      <TopLine>54</TopLine>
       <CurrentLine>65</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\stm32f4xx_it.c</PathWithFileName>
@@ -269,10 +252,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>100</ColumnNumber>
+      <ColumnNumber>22</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>199</TopLine>
-      <CurrentLine>207</CurrentLine>
+      <TopLine>430</TopLine>
+      <CurrentLine>443</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\main.c</PathWithFileName>
       <FilenameWithoutPath>main.c</FilenameWithoutPath>
@@ -292,7 +275,7 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>175</TopLine>
+      <TopLine>181</TopLine>
       <CurrentLine>192</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\STM32F4_Discovery\stm32f4_discovery.c</PathWithFileName>
@@ -311,10 +294,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>0</ColumnNumber>
+      <ColumnNumber>66</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>0</TopLine>
-      <CurrentLine>0</CurrentLine>
+      <TopLine>691</TopLine>
+      <CurrentLine>702</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_adc.c</PathWithFileName>
       <FilenameWithoutPath>stm32f4xx_adc.c</FilenameWithoutPath>
@@ -441,7 +424,7 @@
         <Doc>
           <Name>.\stm32f4xx_it.c</Name>
           <ColumnNumber>15</ColumnNumber>
-          <TopLine>50</TopLine>
+          <TopLine>54</TopLine>
           <CurrentLine>65</CurrentLine>
         </Doc>
         <Doc>
@@ -453,7 +436,7 @@
         <Doc>
           <Name>.\STM32F4_Discovery\stm32f4_discovery.c</Name>
           <ColumnNumber>0</ColumnNumber>
-          <TopLine>175</TopLine>
+          <TopLine>181</TopLine>
           <CurrentLine>192</CurrentLine>
         </Doc>
         <Doc>
@@ -464,9 +447,15 @@
         </Doc>
         <Doc>
           <Name>.\main.c</Name>
-          <ColumnNumber>100</ColumnNumber>
-          <TopLine>199</TopLine>
-          <CurrentLine>207</CurrentLine>
+          <ColumnNumber>22</ColumnNumber>
+          <TopLine>430</TopLine>
+          <CurrentLine>443</CurrentLine>
+        </Doc>
+        <Doc>
+          <Name>.\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_adc.c</Name>
+          <ColumnNumber>66</ColumnNumber>
+          <TopLine>691</TopLine>
+          <CurrentLine>702</CurrentLine>
         </Doc>
       </Documents>
     </MDIGroup>
