@@ -22,7 +22,7 @@ NVIC_InitTypeDef NVIC_InitStructure2;
 
 char c[10];
 int i = 0;
-const int THRESHOLD = 1200;
+const int THRESHOLD = 800;
 int num_people = 0;		
 int ir1_flag = 0;
 int ir2_flag = 0;
@@ -330,6 +330,26 @@ void WritePeople(void)
 	printf("%c",num_people); // the value 6s
 }
 
+void CalibrateDistance(void)
+{
+	uint16_t ir1_value = 0;
+	uint16_t ir2_value = 0;
+	char ADC_Value[30];
+
+	ADC_SoftwareStartConv(ADC2);	
+	delay(3);
+	ir1_value = ADC_GetConversionValue(ADC2);
+	sprintf(ADC_Value, "%d", ir1_value); 
+	putsLCD(ADC_Value);
+	putsLCD(" ");
+
+	ADC_SoftwareStartConv(ADC3);
+	delay(3);
+	ir2_value = ADC_GetConversionValue(ADC3);	
+	sprintf(ADC_Value, "%d", ir2_value); 
+	putsLCD(ADC_Value);
+}
+
 int main(void)
 {
     int var_d1;
@@ -382,15 +402,18 @@ int main(void)
 		 ADC_SoftwareStartConv(ADC2);	
 	     delay(3);
 	     ir1_value = ADC_GetConversionValue(ADC2);
-		 //sprintf(ADC_Value, "%d", ir1_value); 
-		 //putsLCD(ADC_Value);
-		 //putsLCD(" ");
+		 sprintf(ADC_Value, "%d", ir1_value); 
+		 putsLCD(ADC_Value);
+		 putsLCD(" ");
 		 delay(3);
 		 ADC_SoftwareStartConv(ADC3);
 	     delay(3);
 	     ir2_value = ADC_GetConversionValue(ADC3);	
-		 //sprintf(ADC_Value, "%d", ir2_value); 
-		 //putsLCD(ADC_Value);
+		 sprintf(ADC_Value, "%d", ir2_value); 
+		 putsLCD(ADC_Value);
+		 putsLCD("   ");
+
+		 //CalibrateDistance();
 
 		 if (ir1_count > 0)
 		    ir1_count++;
@@ -470,12 +493,13 @@ int main(void)
   			}
 		}
 
-		if (ir1_value < THRESHOLD ) //both distance sensors high
+		if (ir1_count > 6 ) 
 		{
 		   ir1_flag = 0;
 		   ir1_count = 0;
 		}
-		if (ir2_value < THRESHOLD )
+		//if (ir2_value < THRESHOLD )
+		if (ir2_count > 6)
 		{
 		   ir2_flag = 0;
 		   ir2_count = 0;
@@ -502,6 +526,7 @@ int main(void)
 		 sprintf(ADC_Value, "%d", var_d2); 
 		 putsLCD(ADC_Value);
 		 putsLCD("   ");  */
+		 //putsLCD("       ");
 	     //cmd2LCD(0x01);	   
 		 delay(40);
 		 

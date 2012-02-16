@@ -152,7 +152,7 @@ __Vectors       DCD     __initial_sp               ; Top of Stack
                 DCD     OTG_HS_EP1_IN_IRQHandler          ; USB OTG HS End Point 1 In                       
                 DCD     OTG_HS_WKUP_IRQHandler            ; USB OTG HS Wakeup through EXTI                         
                 DCD     OTG_HS_IRQHandler                 ; USB OTG HS                                      
-                DCD     DCMI_IRQHandler                   ; DCMI                                            
+               DCD     DCMI_IRQHandler                   ; DCMI                                            
                 DCD     CRYP_IRQHandler                   ; CRYP crypto                                     
                 DCD     HASH_RNG_IRQHandler               ; Hash and Rng
                 DCD     FPU_IRQHandler                    ; FPU

@@ -189,10 +189,10 @@
       <FileType>2</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>0</ColumnNumber>
+      <ColumnNumber>18</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>173</TopLine>
-      <CurrentLine>173</CurrentLine>
+      <TopLine>144</TopLine>
+      <CurrentLine>155</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\startup_stm32f4xx.s</PathWithFileName>
       <FilenameWithoutPath>startup_stm32f4xx.s</FilenameWithoutPath>
@@ -252,10 +252,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>22</ColumnNumber>
+      <ColumnNumber>4</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>430</TopLine>
-      <CurrentLine>443</CurrentLine>
+      <TopLine>393</TopLine>
+      <CurrentLine>401</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\main.c</PathWithFileName>
       <FilenameWithoutPath>main.c</FilenameWithoutPath>
@@ -429,9 +429,9 @@
         </Doc>
         <Doc>
           <Name>.\startup_stm32f4xx.s</Name>
-          <ColumnNumber>0</ColumnNumber>
-          <TopLine>173</TopLine>
-          <CurrentLine>173</CurrentLine>
+          <ColumnNumber>18</ColumnNumber>
+          <TopLine>144</TopLine>
+          <CurrentLine>155</CurrentLine>
         </Doc>
         <Doc>
           <Name>.\STM32F4_Discovery\stm32f4_discovery.c</Name>
@@ -447,9 +447,9 @@
         </Doc>
         <Doc>
           <Name>.\main.c</Name>
-          <ColumnNumber>22</ColumnNumber>
-          <TopLine>430</TopLine>
-          <CurrentLine>443</CurrentLine>
+          <ColumnNumber>4</ColumnNumber>
+          <TopLine>393</TopLine>
+          <CurrentLine>401</CurrentLine>
         </Doc>
         <Doc>
           <Name>.\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_adc.c</Name>

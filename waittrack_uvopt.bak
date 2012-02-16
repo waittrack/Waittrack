@@ -147,38 +147,6 @@
           <Name>-O207 -S0 -C0 -FO7 -FD20000000 -FC800 -FN1 -FF0STM32F4xx_1024 -FS08000000 -FL0100000)</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
-      <Breakpoint>
-        <Bp>
-          <Number>0</Number>
-          <Type>0</Type>
-          <LineNumber>418</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134220120</Address>
-          <ByteObject>0</ByteObject>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>C:\Users\Ryan\Waittrack\Waittrack\main.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression></Expression>
-        </Bp>
-        <Bp>
-          <Number>1</Number>
-          <Type>0</Type>
-          <LineNumber>433</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134220186</Address>
-          <ByteObject>0</ByteObject>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename></Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\waittrack\main.c\433</Expression>
-        </Bp>
-      </Breakpoint>
       <DebugFlag>
         <trace>0</trace>
         <periodic>1</periodic>
@@ -223,7 +191,7 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>173</TopLine>
+      <TopLine>172</TopLine>
       <CurrentLine>173</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\startup_stm32f4xx.s</PathWithFileName>
@@ -284,10 +252,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>0</ColumnNumber>
+      <ColumnNumber>8</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>427</TopLine>
-      <CurrentLine>433</CurrentLine>
+      <TopLine>511</TopLine>
+      <CurrentLine>529</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\main.c</PathWithFileName>
       <FilenameWithoutPath>main.c</FilenameWithoutPath>
@@ -328,7 +296,7 @@
       <Focus>0</Focus>
       <ColumnNumber>66</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>686</TopLine>
+      <TopLine>691</TopLine>
       <CurrentLine>702</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_adc.c</PathWithFileName>
@@ -451,7 +419,7 @@
     <ActiveMDIGroup>0</ActiveMDIGroup>
     <MDIGroup>
       <Size>100</Size>
-      <ActiveTab>4</ActiveTab>
+      <ActiveTab>1</ActiveTab>
       <Documents>
         <Doc>
           <Name>.\stm32f4xx_it.c</Name>
@@ -462,7 +430,7 @@
         <Doc>
           <Name>.\startup_stm32f4xx.s</Name>
           <ColumnNumber>0</ColumnNumber>
-          <TopLine>173</TopLine>
+          <TopLine>172</TopLine>
           <CurrentLine>173</CurrentLine>
         </Doc>
         <Doc>
@@ -479,14 +447,14 @@
         </Doc>
         <Doc>
           <Name>.\main.c</Name>
-          <ColumnNumber>0</ColumnNumber>
-          <TopLine>427</TopLine>
-          <CurrentLine>433</CurrentLine>
+          <ColumnNumber>8</ColumnNumber>
+          <TopLine>511</TopLine>
+          <CurrentLine>529</CurrentLine>
         </Doc>
         <Doc>
           <Name>.\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_adc.c</Name>
           <ColumnNumber>66</ColumnNumber>
-          <TopLine>686</TopLine>
+          <TopLine>691</TopLine>
           <CurrentLine>702</CurrentLine>
         </Doc>
       </Documents>
