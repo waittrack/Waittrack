@@ -22,7 +22,7 @@ NVIC_InitTypeDef NVIC_InitStructure2;
 
 char c[10];
 int i = 0;
-const int THRESHOLD = 1500;
+const int THRESHOLD = 1300;
 int num_people = 0;
 uint16_t ir1_value = 0;
 uint16_t ir2_value = 0;		
@@ -284,6 +284,12 @@ void GPIOInitialize(void)
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;	
   GPIO_Init(GPIOE, &GPIO_InitStructure); 
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;	
+  GPIO_Init(GPIOE, &GPIO_InitStructure); 
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;		
+  GPIO_Init(GPIOE, &GPIO_InitStructure); 
 }
 
 void NVICInitialize(void)
@@ -382,10 +388,9 @@ void ClearVariables(void)
 {
 	var_d1 = 0;
     var_d2 = 0;
-	ir1_count = 0;
-	ir2_count = 0;
-	pressure_left = 0;
-	pressure_right = 0;
+//	ir1_count =0;
+//	ir2_count = 0;
+//	ir1_flag = 1;
 	WritePeople();
 	sprintf(ADC_Value, "%d", num_people);
 	putsLCD(ADC_Value);
@@ -394,36 +399,51 @@ void ClearVariables(void)
 
 void CheckFalseCounter(void)
 {
-    if (ir1_count > 200 ) 
+  if((var_d1 == 1 && var_d2 == 0) || (var_d1 == 0 && var_d2 == 1)) //if only 1 var is high, increase delay counter
+  {
+    irfalse_counter++;
+
+	if(irfalse_counter > 200) //about 2.5 seconds
 	{
-	  ir1_flag = 0;
-	  ClearVariables();
-	  putsLCD("R ");
+	  var_d1 = 0;
+	  var_d2 = 0;
+	  irfalse_counter = 0;
+	  if((var_d1 == 1 && var_d2 == 0))
+	  	putsLCD(" R ");
+	  else if((var_d1 == 0 && var_d2 == 1))
+	    putsLCD(" T022 ");
 	}
-	if (ir2_count > 200)
-	{
-	  ir2_flag = 0;
-	  ClearVariables();
-	  putsLCD("R ");
-	}
+  }
 }
 
 void CheckPressure(void)
 {
-  if(GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_5) == 1)
+  if(GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_3) == 0 || GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_5) == 0)
   {
     pressure_left = 1;
   }
+  else
+  {
+    pressure_left = 0;
+  }
 
-  if(GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_3) == 1)
+  if(GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_4) == 0 || GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_6) == 0)
   {
     pressure_right = 1;
+  }
+  else
+  {
+    pressure_right = 0;
   }
 }
 
 
 
-   
+
+
+
+
+
 
 
 
@@ -444,6 +464,7 @@ int main(void)
 
 	//initialization
 	TurnOffBuffers();
+  	//USART_SendData(USART2,0x30);
   	RCCInitialize();
   	PinConfig();
   	USARTInitialize();  
@@ -485,36 +506,38 @@ int main(void)
 		 if (ir2_count > 0)
 		    ir2_count++;
 
-	     if (ir1_value > THRESHOLD && ir2_value < THRESHOLD && ir1_flag == 0) //person has tripped first sensor
+	     if (ir1_value > THRESHOLD && ir2_value < THRESHOLD && ir1_count == 0) //person has tripped first sensor
 		 {
 		 	//if the sensor hasn't been tripped already, then start the delay counter for decaying
 			  ir1_count = 1;
-			  ir1_flag = 1;
 			if(var_d2 == 1) //second sensor is already high and person has moved past it
   			{
-			  if(pressure_left == 1 && pressure_right == 1)
-			    num_people--;
 			  num_people--;
 			  ClearVariables();
   			}
   			else if(var_d2 == 0) //new person OR two people have walked by another and the person is now leaving (1 sensor hit)
   			{
+			  //if(ir1_count >= 5 && ir1_flag == 0)
+			  //if( ir1_flag == 0)
     		  	var_d1 = 1;
   			} 
 		 }
-		 else if (ir1_value < THRESHOLD && ir2_value > THRESHOLD && ir2_flag == 0) //person has tripped second sensor
+		 else if (ir1_value < THRESHOLD && ir2_value > THRESHOLD && ir2_count == 0) //person has tripped second sensor
 		 {
 			  ir2_count = 1;
-			  ir2_flag = 1;
  		    if(var_d1 == 1) //first sensor is already high and person is past it
   			{
-			  if(pressure_left == 1 && pressure_right == 1)
-			    num_people++;
+			  //if(pressure_left == 1 && pressure_right == 1)
+			  //  num_people++;
+			  //else if(pressure_left == 0 && pressure_right == 0)
+			  //  num_people--;
 			  num_people++;
     		  ClearVariables();
   			}
  			else if(var_d1 == 0) //new person
   			{
+			  //if(ir2_count >= 5 && ir2_flag == 0)
+			  //if(ir2_flag == 0)
    			    var_d2 = 1;
   			}
 		 }
@@ -546,11 +569,18 @@ int main(void)
   			}
 		}
 		*/
-		
-		if (ir1_value < THRESHOLD && ir1_flag == 1)
-		  ir1_flag = 0;
-		if (ir2_value < THRESHOLD && ir2_flag == 1)
-		  ir2_flag = 0;
+
+		if (ir1_count > 18 ) 
+		{
+		   ir1_flag = 0;
+		   ir1_count = 0;
+		}
+		if (ir2_count > 18)
+		{
+		   ir2_flag = 0;
+		   ir2_count = 0;
+		}
+
 
 	  }		
 		

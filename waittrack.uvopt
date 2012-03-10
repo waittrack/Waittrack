@@ -189,10 +189,10 @@
       <FileType>2</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>18</ColumnNumber>
+      <ColumnNumber>24</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>144</TopLine>
-      <CurrentLine>155</CurrentLine>
+      <TopLine>167</TopLine>
+      <CurrentLine>179</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\startup_stm32f4xx.s</PathWithFileName>
       <FilenameWithoutPath>startup_stm32f4xx.s</FilenameWithoutPath>
@@ -252,10 +252,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>4</ColumnNumber>
+      <ColumnNumber>17</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>393</TopLine>
-      <CurrentLine>401</CurrentLine>
+      <TopLine>104</TopLine>
+      <CurrentLine>114</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\main.c</PathWithFileName>
       <FilenameWithoutPath>main.c</FilenameWithoutPath>
@@ -336,10 +336,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>0</ColumnNumber>
+      <ColumnNumber>76</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>0</TopLine>
-      <CurrentLine>0</CurrentLine>
+      <TopLine>308</TopLine>
+      <CurrentLine>319</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_gpio.c</PathWithFileName>
       <FilenameWithoutPath>stm32f4xx_gpio.c</FilenameWithoutPath>
@@ -429,9 +429,9 @@
         </Doc>
         <Doc>
           <Name>.\startup_stm32f4xx.s</Name>
-          <ColumnNumber>18</ColumnNumber>
-          <TopLine>144</TopLine>
-          <CurrentLine>155</CurrentLine>
+          <ColumnNumber>24</ColumnNumber>
+          <TopLine>167</TopLine>
+          <CurrentLine>179</CurrentLine>
         </Doc>
         <Doc>
           <Name>.\STM32F4_Discovery\stm32f4_discovery.c</Name>
@@ -447,15 +447,21 @@
         </Doc>
         <Doc>
           <Name>.\main.c</Name>
-          <ColumnNumber>4</ColumnNumber>
-          <TopLine>393</TopLine>
-          <CurrentLine>401</CurrentLine>
+          <ColumnNumber>17</ColumnNumber>
+          <TopLine>104</TopLine>
+          <CurrentLine>114</CurrentLine>
         </Doc>
         <Doc>
           <Name>.\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_adc.c</Name>
           <ColumnNumber>66</ColumnNumber>
           <TopLine>691</TopLine>
           <CurrentLine>702</CurrentLine>
+        </Doc>
+        <Doc>
+          <Name>.\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_gpio.c</Name>
+          <ColumnNumber>76</ColumnNumber>
+          <TopLine>308</TopLine>
+          <CurrentLine>319</CurrentLine>
         </Doc>
       </Documents>
     </MDIGroup>
