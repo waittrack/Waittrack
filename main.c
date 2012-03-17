@@ -22,7 +22,10 @@ NVIC_InitTypeDef NVIC_InitStructure2;
 
 char c[10];
 int i = 0;
-const int THRESHOLD = 1500;
+int THRESHOLD_1_1 = 1100;
+int THRESHOLD_1_2 = 1750;
+int THRESHOLD_2_1 = 1100;
+int THRESHOLD_2_2 = 1100;
 int num_people = 0;
 uint16_t ir1_value = 0;
 uint16_t ir2_value = 0;		
@@ -36,6 +39,21 @@ int var_d2;
 char ADC_Value[30];
 int pressure_left = 0;
 int pressure_right = 0;
+
+char c_2[10];
+int i_2 = 0;
+const int THRESHOLD_2 = 1500;
+uint16_t ir1_value_2 = 0;
+uint16_t ir2_value_2 = 0;		
+int ir1_flag_2 = 0;
+int ir2_flag_2 = 0;
+int ir1_count_2 = 0;
+int ir2_count_2 = 0;
+int irfalse_counter_2 = 0;
+int var_d1_2;
+int var_d2_2;
+int pressure_left_2 = 0;
+int pressure_right_2 = 0;
 
 void delay(int a)
 {
@@ -82,6 +100,11 @@ void ADC3_Config(void)
   	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL ;
   	GPIO_Init(GPIOC, &GPIO_InitStructure);
 
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
+ 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
+  	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL ;
+  	GPIO_Init(GPIOC, &GPIO_InitStructure);
+
 	//initialize ADC3
 	ADC_InitStructure.ADC_Resolution = ADC_Resolution_12b;
   	ADC_InitStructure.ADC_ScanConvMode = DISABLE;
@@ -91,13 +114,27 @@ void ADC3_Config(void)
   	ADC_InitStructure.ADC_NbrOfConversion = 1;
   	ADC_Init(ADC3, &ADC_InitStructure);
 
-	/* ADC3 regular channel12 configuration *************************************/
-  	ADC_RegularChannelConfig(ADC3, ADC_Channel_12, 1, ADC_SampleTime_480Cycles);
+	/* ADC3 regular channel12 configuration ************************************
+  	ADC_RegularChannelConfig(ADC3, ADC_Channel_12, 1, ADC_SampleTime_480Cycles);*/
+
+	/* Enable ADC3 
+ 	 ADC_Cmd(ADC3, ENABLE);*/
+
+}
+
+/*enable a channel of ADC3 
+* Will either be ADC_Channel_12 or ADC_Channel_13
+*
+*/
+void ADC3_Ch_Enable(uint8_t ADC_Channel)
+{
+	/* ADC3 regular channel configuration *************************************/
+  	ADC_RegularChannelConfig(ADC3, ADC_Channel, 1, ADC_SampleTime_480Cycles);
 
 	/* Enable ADC3 */
  	 ADC_Cmd(ADC3, ENABLE);
-
 }
+
 
 void ADC2_Config(void)
 {
@@ -106,6 +143,12 @@ void ADC2_Config(void)
 
 	//configure ADC2 Channel4 pin as analog input
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
+ 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
+  	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL ;
+  	GPIO_Init(GPIOC, &GPIO_InitStructure);
+
+	//configure ADC2 Channel4 pin as analog input
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
  	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
   	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL ;
   	GPIO_Init(GPIOC, &GPIO_InitStructure);
@@ -119,12 +162,25 @@ void ADC2_Config(void)
   	ADC_InitStructure.ADC_NbrOfConversion = 1;
   	ADC_Init(ADC2, &ADC_InitStructure);
 
-	/* ADC2 regular channel14 configuration *************************************/
-  	ADC_RegularChannelConfig(ADC2, ADC_Channel_14, 1, ADC_SampleTime_480Cycles);
+	/* ADC2 regular channel14 configuration *************************************
+  	ADC_RegularChannelConfig(ADC2, ADC_Channel_14, 1, ADC_SampleTime_480Cycles); */
 
-	/* Enable ADC2 */
- 	 ADC_Cmd(ADC2, ENABLE);
+	/* Enable ADC2 
+ 	 ADC_Cmd(ADC2, ENABLE);*/
 }	
+
+/*enable a channel of ADC3 
+* Will either be ADC_Channel_12 or ADC_Channel_13
+*
+*/
+void ADC2_Ch_Enable(uint8_t ADC_Channel)
+{
+	/* ADC3 regular channel12 configuration *************************************/
+  	ADC_RegularChannelConfig(ADC2, ADC_Channel, 1, ADC_SampleTime_480Cycles);
+
+	/* Enable ADC3 */
+ 	 ADC_Cmd(ADC2, ENABLE);
+}
 
 /**************************************************
 *	LCD confguration 
@@ -345,24 +401,60 @@ void WritePeople(void)
 void CalibrateDistance(void)
 {
 	char ADC_Value[30];
+	putsLCD("Calibrating.");
 
+    ADC2_Ch_Enable(ADC_Channel_14);
+	delay(1);
 	ADC_SoftwareStartConv(ADC2);	
 	delay(3);
 	ir1_value = ADC_GetConversionValue(ADC2);
-	sprintf(ADC_Value, "%d", ir1_value); 
-	putsLCD(ADC_Value);
-	putsLCD(" ");
+	THRESHOLD_1_1 = ir1_value + 250;
 
+	sprintf(ADC_Value, "%d", THRESHOLD_1_1);
+	putsLCD(ADC_Value);
+
+	delay(3);
+	putsLCD(".");
+
+	ADC3_Ch_Enable(ADC_Channel_12);
+	delay(1);
 	ADC_SoftwareStartConv(ADC3);
 	delay(3);
-	ir2_value = ADC_GetConversionValue(ADC3);	
-	sprintf(ADC_Value, "%d", ir2_value); 
+	ir2_value = ADC_GetConversionValue(ADC3);
+	THRESHOLD_1_2 = ir2_value + 250;
+
+	sprintf(ADC_Value, "%d", THRESHOLD_1_2);
 	putsLCD(ADC_Value);
-	putsLCD("    ");
+
+	delay(3);
+	putsLCD(".");
+
+/*	ADC2_Ch_Enable(ADC_Channel_15);
+	delay(1);
+	ADC_SoftwareStartConv(ADC2);	
+	delay(3);
+	ir1_value_2 = ADC_GetConversionValue(ADC2);
+	THRESHOLD_2_1 = ir1_value_2;
+
+	delay(3);
+	putsLCD(".");
+
+	ADC3_Ch_Enable(ADC_Channel_13);
+	delay(1);
+	ADC_SoftwareStartConv(ADC3);
+	delay(3);
+	ir2_value_2 = ADC_GetConversionValue(ADC3);
+	THRESHOLD_2_2 = ir2_value_2;*/
+
+	delay(3);
+	putsLCD(".");
+
 }
 
 void ReadDistance(void)
 {
+	ADC2_Ch_Enable(ADC_Channel_14);
+	delay(1);
 	ADC_SoftwareStartConv(ADC2);	
 	delay(3);
 	ir1_value = ADC_GetConversionValue(ADC2);
@@ -370,10 +462,35 @@ void ReadDistance(void)
 	//putsLCD(ADC_Value);
 	//putsLCD(" ");
 	delay(3);
+
+	ADC3_Ch_Enable(ADC_Channel_12);
+	delay(1);
 	ADC_SoftwareStartConv(ADC3);
 	delay(3);
 	ir2_value = ADC_GetConversionValue(ADC3);	
 	//sprintf(ADC_Value, "%d", ir2_value); 
+	//putsLCD(ADC_Value);
+	//putsLCD("    ");
+}		  
+
+void ReadDistance_2(void)
+{
+	ADC2_Ch_Enable(ADC_Channel_15);
+	delay(1);
+	ADC_SoftwareStartConv(ADC2);	
+	delay(3);
+	ir1_value_2 = ADC_GetConversionValue(ADC2);
+	//sprintf(ADC_Value, "%d", ir1_value_2); 
+	//putsLCD(ADC_Value);
+	//putsLCD(" ");
+	delay(3);
+
+	ADC3_Ch_Enable(ADC_Channel_13);
+	delay(1);
+	ADC_SoftwareStartConv(ADC3);
+	delay(3);
+	ir2_value_2 = ADC_GetConversionValue(ADC3);	
+	//sprintf(ADC_Value, "%d", ir2_value_2); 
 	//putsLCD(ADC_Value);
 	//putsLCD("   ");
 }
@@ -386,6 +503,20 @@ void ClearVariables(void)
 	ir2_count = 0;
 	pressure_left = 0;
 	pressure_right = 0;
+	WritePeople();
+	sprintf(ADC_Value, "%d", num_people);
+	putsLCD(ADC_Value);
+	putsLCD(" ");
+}
+
+void ClearVariables_2(void)
+{
+	var_d1_2 = 0;
+    var_d2_2 = 0;
+	ir1_count_2 = 0;
+	ir2_count_2 = 0;
+	pressure_left_2 = 0;
+	pressure_right_2 = 0;
 	WritePeople();
 	sprintf(ADC_Value, "%d", num_people);
 	putsLCD(ADC_Value);
@@ -408,32 +539,51 @@ void CheckFalseCounter(void)
 	}
 }
 
+void CheckFalseCounter_2(void)
+{
+    if (ir1_count_2 > 200 ) 
+	{
+	  ir1_flag_2 = 0;
+	  ClearVariables_2();
+	  putsLCD("T ");
+	}
+	if (ir2_count_2 > 200)
+	{
+	  ir2_flag_2 = 0;
+	  ClearVariables_2();
+	  putsLCD("T ");
+	}
+}
+
 void CheckPressure(void)
 {
-  if(GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_5) == 1)
+  if(GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_6) == 1)
   {
     pressure_left = 1;
   }
 
-  if(GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_3) == 1)
+  if(GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_4) == 1)
   {
     pressure_right = 1;
   }
 }
 
+void CheckPressure_2(void)
+{
+  if(GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_5) == 1)
+  {
+    pressure_left_2 = 1;
+  }
+
+  if(GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_3) == 1)
+  {
+    pressure_right_2 = 1;
+  }
+}
 
 
-   
 
-
-
-
-
-
-
-
-
-
+  
 
 int main(void)
 {
@@ -441,6 +591,8 @@ int main(void)
 	int j = 0;
 	var_d1 = 0;
 	var_d2 = 0;
+	var_d1_2 = 0;
+	var_d2_2 = 0;
 
 	//initialization
 	TurnOffBuffers();
@@ -462,12 +614,17 @@ int main(void)
 	printf("%c",num_people); // the value 0
 
 	openLCD();
+	cmd2LCD(0x01);
  	//configure ADC
 	ADC_Common_Config();
   	//configure ADC2
 	ADC2_Config();
   	//configure ADC3
 	ADC3_Config();
+
+	CalibrateDistance();
+	putsLCD(" Calibration Complete....");
+	cmd2LCD(0x01);
 
 	while(1)
 	{
@@ -477,7 +634,9 @@ int main(void)
 
 		 //read the value of the distance sensors
 		 ReadDistance();
+		 //ReadDistance_2();
 		 CheckPressure();
+		 //CheckPressure_2();
 
 		 //if the sensor has been tripped, increase the delay counter to take into account decaying
 		 if (ir1_count > 0)
@@ -485,7 +644,12 @@ int main(void)
 		 if (ir2_count > 0)
 		    ir2_count++;
 
-	     if (ir1_value > THRESHOLD && ir2_value < THRESHOLD && ir1_flag == 0) //person has tripped first sensor
+		if (ir1_count_2 > 0)
+		    ir1_count_2++;
+		 if (ir2_count_2 > 0)
+		    ir2_count_2++;
+
+	     if (ir1_value > THRESHOLD_1_1 && ir2_value < THRESHOLD_1_2 && ir1_flag == 0) //person has tripped first sensor
 		 {
 		 	//if the sensor hasn't been tripped already, then start the delay counter for decaying
 			  ir1_count = 1;
@@ -502,7 +666,7 @@ int main(void)
     		  	var_d1 = 1;
   			} 
 		 }
-		 else if (ir1_value < THRESHOLD && ir2_value > THRESHOLD && ir2_flag == 0) //person has tripped second sensor
+		 else if (ir1_value < THRESHOLD_2_1 && ir2_value > THRESHOLD_2_2 && ir2_flag == 0) //person has tripped second sensor
 		 {
 			  ir2_count = 1;
 			  ir2_flag = 1;
@@ -547,14 +711,20 @@ int main(void)
 		}
 		*/
 		
-		if (ir1_value < THRESHOLD && ir1_flag == 1)
+		if (ir1_value < THRESHOLD_1_1 && ir1_flag == 1)
 		  ir1_flag = 0;
-		if (ir2_value < THRESHOLD && ir2_flag == 1)
+		if (ir2_value < THRESHOLD_1_2 && ir2_flag == 1)
 		  ir2_flag = 0;
+
+		 if (ir1_value_2 < THRESHOLD_2_1 && ir1_flag_2 == 1)
+		  ir1_flag_2 = 0;
+		if (ir2_value_2 < THRESHOLD_2_2 && ir2_flag_2 == 1)
+		  ir2_flag_2 = 0;
 
 	  }		
 		
 		 CheckFalseCounter();
+		 //CheckFalseCounter_2();
 	     //cmd2LCD(0x01);	   
 		 delay(30);	 
 	}

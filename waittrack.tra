@@ -22,7 +22,7 @@
 ### ADS-LD Output File: 'waittrack.axf'
 ### ADS-LD Command File: 'waittrack.lnp'
 ### Checking for dirty Components...
-### Creating CmdFile 'waittrack.lnp', Handle=0x000001AC
+### Creating CmdFile 'waittrack.lnp', Handle=0x00000628
 ### Writing '.lnp' file
 ### ADS-LD Command file 'waittrack.lnp' is ready.
 ### ADS-LD: About to start ADS-LD Thread.
