@@ -191,7 +191,7 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>171</TopLine>
+      <TopLine>167</TopLine>
       <CurrentLine>173</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\startup_stm32f4xx.s</PathWithFileName>
@@ -252,10 +252,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>19</ColumnNumber>
+      <ColumnNumber>3</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>400</TopLine>
-      <CurrentLine>412</CurrentLine>
+      <TopLine>678</TopLine>
+      <CurrentLine>684</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\main.c</PathWithFileName>
       <FilenameWithoutPath>main.c</FilenameWithoutPath>
@@ -389,7 +389,7 @@
   </Group>
 
   <AlienFiles>
-    <PathWithFilename>C:\Users\Serar\Documents\School_Stuff\Final_Project\Waittrack\stm32f4xx_conf.h</PathWithFilename>
+    <PathWithFilename>C:\Users\Ryan\Waittrack\Waittrack\Waittrack\stm32f4xx_conf.h</PathWithFilename>
     <TopLine>37</TopLine>
     <CurrentLine>40</CurrentLine>
     <Constant>0</Constant>
@@ -419,7 +419,7 @@
     <ActiveMDIGroup>0</ActiveMDIGroup>
     <MDIGroup>
       <Size>100</Size>
-      <ActiveTab>4</ActiveTab>
+      <ActiveTab>1</ActiveTab>
       <Documents>
         <Doc>
           <Name>.\stm32f4xx_it.c</Name>
@@ -430,7 +430,7 @@
         <Doc>
           <Name>.\startup_stm32f4xx.s</Name>
           <ColumnNumber>0</ColumnNumber>
-          <TopLine>171</TopLine>
+          <TopLine>167</TopLine>
           <CurrentLine>173</CurrentLine>
         </Doc>
         <Doc>
@@ -447,9 +447,9 @@
         </Doc>
         <Doc>
           <Name>.\main.c</Name>
-          <ColumnNumber>19</ColumnNumber>
-          <TopLine>400</TopLine>
-          <CurrentLine>412</CurrentLine>
+          <ColumnNumber>3</ColumnNumber>
+          <TopLine>678</TopLine>
+          <CurrentLine>684</CurrentLine>
         </Doc>
         <Doc>
           <Name>.\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_adc.c</Name>

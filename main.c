@@ -1,5 +1,20 @@
-								 /**LCD program that controls an LCD using the HD44780 driver**/
-#include  "stm32f4_discovery.h"
+/********************************************
+*********************************************
+*
+*   ENEL 400
+*   Waittrack
+*   Customer Counting System
+*
+*   Authors: Ryan Paidel & Serar Mikha
+*   Created: January 15, 2012
+*   Last Modified: March 23, 2012
+*
+*   Libraries and typedefs courtesy of
+*   STM Electronics - http://www.st.com
+*
+*********************************************
+*********************************************/	
+					
 #include "stm32f4xx_usart.h"
 #include <stdio.h>
 
@@ -20,6 +35,9 @@ USART_InitTypeDef USART_InitStructure;
 USART_ClockInitTypeDef USART2Clock;
 NVIC_InitTypeDef NVIC_InitStructure2;
 
+/***********************************************
+*   Declaration of variables
+***********************************************/
 char c[10];
 int i = 0;
 int THRESHOLD_1_1 = 1100;
@@ -39,7 +57,7 @@ int var_d2;
 char ADC_Value[30];
 int pressure_left = 0;
 int pressure_right = 0;
-
+int pressure_both = 0;
 char c_2[10];
 int i_2 = 0;
 const int THRESHOLD_2 = 1500;
@@ -54,7 +72,15 @@ int var_d1_2;
 int var_d2_2;
 int pressure_left_2 = 0;
 int pressure_right_2 = 0;
+int pressure_both_2 = 0;
+int pressure_1;
+int pressure_2;
+int pressure_3;
 
+
+/**************************************************
+* This function adds a delay of 10000xa to the system
+***************************************************/
 void delay(int a)
 {
 	int x = 0;
@@ -62,12 +88,13 @@ void delay(int a)
 
 	while (x<a)
 	{
-		for(y=0; y<10000; y++)
+ 		for(y=0; y<10000; y++)
 		{
 		}
 		x++;
 	}
 }
+
 
 /**************************************************
 *	ADC confguration 
@@ -124,8 +151,7 @@ void ADC3_Config(void)
 
 /*enable a channel of ADC3 
 * Will either be ADC_Channel_12 or ADC_Channel_13
-*
-*/
+**/
 void ADC3_Ch_Enable(uint8_t ADC_Channel)
 {
 	/* ADC3 regular channel configuration *************************************/
@@ -194,7 +220,9 @@ void cmd2LCD(char cmd)
 
 	/**Write out upper bits**/
 	cmd &= 0xF0; //clear out lower four bits
+	delay(10);
 	GPIO_SetBits(GPIOE, LCD_E_Pin); //Pull E high
+	delay(10);
 	cmd >>=2;//shift so that the command is going to the data pins
 	GPIO_Write(GPIOE, ((cmd | 0x02) << 7));//ouputput upper 4 bits, E and RS
 										   //the written value must be shifted left by 7 bits
@@ -202,9 +230,13 @@ void cmd2LCD(char cmd)
 	delay(10);
 
 	/**Write out lower bits**/
+	delay(10);
 	GPIO_ResetBits(GPIOE, LCD_E_Pin); //Pull E low
+	delay(10);
 	cmd = temp & 0x0F;//extract lower four bits
+	delay(10);
 	GPIO_SetBits(GPIOE, LCD_E_Pin); //Pull E high
+	delay(10);
 	cmd <<=2;//shift left so that the command is going to the data pins
 	GPIO_Write(GPIOE, ((cmd | 0x02) << 7));//ouputput upper 4 bits, E and RS
 										  //the written value must be shifted left by 7 bits
@@ -212,7 +244,7 @@ void cmd2LCD(char cmd)
 	delay(10);
 	GPIO_ResetBits(GPIOE, LCD_E_Pin); //Pull E low
 	
-	delay(3);
+	delay(10);
 }
 
 void openLCD(void)
@@ -237,6 +269,8 @@ void openLCD(void)
 	cmd2LCD(0x0F); //turn on display, cursor, blinking
 	cmd2LCD(0x06);//move cursor right
 	cmd2LCD(0x01);//clear screen, move cursor to home	
+	
+	delay(100);
 }
 
 void putcLCD(char c)
@@ -387,6 +421,11 @@ void USART2_IRQHandler(void)
   }
 }
 
+/**************************************************
+*	Write people
+*	send the current number of people
+*       to the SitePlayer
+***************************************************/
 void WritePeople(void)
 {
     if(num_people < 0)
@@ -398,6 +437,11 @@ void WritePeople(void)
 	printf("%c",num_people); // the value 6s
 }
 
+/**************************************************
+*	Calibrate Distance 
+*	Reads the set distance values and adds
+*       a small buffer to each for the threshold
+***************************************************/
 void CalibrateDistance(void)
 {
 	char ADC_Value[30];
@@ -408,7 +452,8 @@ void CalibrateDistance(void)
 	ADC_SoftwareStartConv(ADC2);	
 	delay(3);
 	ir1_value = ADC_GetConversionValue(ADC2);
-	THRESHOLD_1_1 = ir1_value + 250;
+	//THRESHOLD_1_1 = ir1_value + 250;
+	THRESHOLD_1_1 = 1420;
 
 	sprintf(ADC_Value, "%d", THRESHOLD_1_1);
 	putsLCD(ADC_Value);
@@ -421,20 +466,24 @@ void CalibrateDistance(void)
 	ADC_SoftwareStartConv(ADC3);
 	delay(3);
 	ir2_value = ADC_GetConversionValue(ADC3);
-	THRESHOLD_1_2 = ir2_value + 250;
+	//THRESHOLD_2_1 = ir2_value + 250;
+	THRESHOLD_2_1 = 1420;
 
-	sprintf(ADC_Value, "%d", THRESHOLD_1_2);
+	sprintf(ADC_Value, "%d", THRESHOLD_2_1);
 	putsLCD(ADC_Value);
 
 	delay(3);
-	putsLCD(".");
+	putsLCD("...");
 
-/*	ADC2_Ch_Enable(ADC_Channel_15);
+	ADC2_Ch_Enable(ADC_Channel_15);
 	delay(1);
 	ADC_SoftwareStartConv(ADC2);	
 	delay(3);
 	ir1_value_2 = ADC_GetConversionValue(ADC2);
-	THRESHOLD_2_1 = ir1_value_2;
+	//THRESHOLD_1_2 = ir1_value_2 + 250;
+	THRESHOLD_1_2 = 1200;
+	sprintf(ADC_Value, "%d", THRESHOLD_1_2);
+	putsLCD(ADC_Value);
 
 	delay(3);
 	putsLCD(".");
@@ -444,13 +493,19 @@ void CalibrateDistance(void)
 	ADC_SoftwareStartConv(ADC3);
 	delay(3);
 	ir2_value_2 = ADC_GetConversionValue(ADC3);
-	THRESHOLD_2_2 = ir2_value_2;*/
+	//THRESHOLD_2_2 = ir2_value_2 + 250;
+	THRESHOLD_2_2 = 1200;
+	sprintf(ADC_Value, "%d", THRESHOLD_2_2);
+	putsLCD(ADC_Value);
 
 	delay(3);
 	putsLCD(".");
-
 }
 
+/**************************************************
+*	Read Distance (1) 
+*	Reads first set of sensors
+***************************************************/
 void ReadDistance(void)
 {
 	ADC2_Ch_Enable(ADC_Channel_14);
@@ -473,6 +528,10 @@ void ReadDistance(void)
 	//putsLCD("    ");
 }		  
 
+/**************************************************
+*	Read Distance (2)
+*       Reads second set of sensors
+***************************************************/
 void ReadDistance_2(void)
 {
 	ADC2_Ch_Enable(ADC_Channel_15);
@@ -495,96 +554,136 @@ void ReadDistance_2(void)
 	//putsLCD("   ");
 }
 
+/**************************************************
+*	Clear Variables (1)
+*       Clears the first set of variables
+***************************************************/
 void ClearVariables(void)
 {
 	var_d1 = 0;
-    var_d2 = 0;
+        var_d2 = 0;
 	ir1_count = 0;
 	ir2_count = 0;
-	pressure_left = 0;
-	pressure_right = 0;
+	pressure_both = 0;
+	pressure_1 = 0;
+	pressure_2 = 0;
+	pressure_3 = 0;
 	WritePeople();
 	sprintf(ADC_Value, "%d", num_people);
+	cmd2LCD(0x88);
 	putsLCD(ADC_Value);
 	putsLCD(" ");
 }
 
+/**************************************************
+*	Clear Variables (2)
+*       Clears the second set of variables
+***************************************************/
 void ClearVariables_2(void)
 {
 	var_d1_2 = 0;
     var_d2_2 = 0;
 	ir1_count_2 = 0;
 	ir2_count_2 = 0;
-	pressure_left_2 = 0;
-	pressure_right_2 = 0;
+	pressure_both_2 = 0;
+	pressure_1 = 0;
+	pressure_2 = 0;
+	pressure_3 = 0;
 	WritePeople();
 	sprintf(ADC_Value, "%d", num_people);
+	cmd2LCD(0x88);
 	putsLCD(ADC_Value);
 	putsLCD(" ");
 }
 
+/**************************************************
+*	Check False Counter (1)
+*       Checks to see if person is loitering
+*       around a single point
+***************************************************/
 void CheckFalseCounter(void)
 {
-    if (ir1_count > 200 ) 
+    if (ir1_count > 100 ) 
 	{
 	  ir1_flag = 0;
 	  ClearVariables();
-	  putsLCD("R ");
 	}
-	if (ir2_count > 200)
+	if (ir2_count > 100)
 	{
 	  ir2_flag = 0;
 	  ClearVariables();
-	  putsLCD("R ");
 	}
 }
 
+/**************************************************
+*	Check False Counter (2)
+*       Checks to see if person is loitering
+*       around a single point
+***************************************************/
 void CheckFalseCounter_2(void)
 {
-    if (ir1_count_2 > 200 ) 
+    if (ir1_count_2 > 100 ) 
 	{
 	  ir1_flag_2 = 0;
 	  ClearVariables_2();
-	  putsLCD("T ");
 	}
-	if (ir2_count_2 > 200)
+	if (ir2_count_2 > 100)
 	{
 	  ir2_flag_2 = 0;
 	  ClearVariables_2();
-	  putsLCD("T ");
 	}
 }
 
+/**************************************************
+*	Check Pressure (1)
+*       Checks to see if mat 1 is high
+***************************************************/
 void CheckPressure(void)
 {
-  if(GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_6) == 1)
+  if(GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_6) == 1 && GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_4) == 1)
   {
-    pressure_left = 1;
-  }
-
-  if(GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_4) == 1)
-  {
-    pressure_right = 1;
+    pressure_both = 1;
   }
 }
 
+/**************************************************
+*	Check Pressure (2)
+*       Checks to see if mat 2 is high
+***************************************************/
 void CheckPressure_2(void)
 {
-  if(GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_5) == 1)
+  if(GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_5) == 1 && GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_3) == 1)
   {
-    pressure_left_2 = 1;
-  }
+    pressure_both_2 = 1;
+  } 
+}
 
-  if(GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_3) == 1)
-  {
-    pressure_right_2 = 1;
-  }
+/**************************************************
+*	Check Pressure Total
+*       Checks the overall pressure of both mats
+***************************************************/																				
+void CheckPressureTotal(void)
+{
+   if(GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_6) == 1) //right of both
+   {
+    pressure_1 = 1;
+   }
+   else if(GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_5) == 1 || GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_4) == 1) //right of both
+   {
+    pressure_2 = 1;
+   }
+   else if(GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_3) == 1) //right of both
+   {
+    pressure_3 = 1;
+   }
 }
 
 
 
   
-
+/**************************************************
+*	Main function
+***************************************************/
 int main(void)
 {
 	uint16_t old_value = 0;
@@ -593,6 +692,7 @@ int main(void)
 	var_d2 = 0;
 	var_d1_2 = 0;
 	var_d2_2 = 0;
+	delay(1000);
 
 	//initialization
 	TurnOffBuffers();
@@ -622,9 +722,12 @@ int main(void)
   	//configure ADC3
 	ADC3_Config();
 
+	openLCD();
 	CalibrateDistance();
-	putsLCD(" Calibration Complete....");
+	putsLCD(" Complete....");
 	cmd2LCD(0x01);
+
+	putsLCD("Count: ");
 
 	while(1)
 	{
@@ -632,11 +735,14 @@ int main(void)
 	  {
 		 //CalibrateDistance();
 
-		 //read the value of the distance sensors
+		 //read the value of the distance sensors and check for pressure
 		 ReadDistance();
-		 //ReadDistance_2();
-		 CheckPressure();
+		 ReadDistance_2();
+
+		 //CheckPressure();
 		 //CheckPressure_2();
+
+		 CheckPressureTotal();
 
 		 //if the sensor has been tripped, increase the delay counter to take into account decaying
 		 if (ir1_count > 0)
@@ -649,15 +755,18 @@ int main(void)
 		 if (ir2_count_2 > 0)
 		    ir2_count_2++;
 
-	     if (ir1_value > THRESHOLD_1_1 && ir2_value < THRESHOLD_1_2 && ir1_flag == 0) //person has tripped first sensor
+
+/******************************** first set of sensor code starts here *************************************/
+
+	     if (ir1_value > THRESHOLD_1_1 && ir2_value < THRESHOLD_2_1 && ir1_flag == 0) //person has tripped first sensor
 		 {
 		 	//if the sensor hasn't been tripped already, then start the delay counter for decaying
 			  ir1_count = 1;
 			  ir1_flag = 1;
 			if(var_d2 == 1) //second sensor is already high and person has moved past it
   			{
-			  if(pressure_left == 1 && pressure_right == 1)
-			    num_people--;
+			  if (pressure_1 == 1 && pressure_2 == 1 && pressure_3 == 1)
+			    num_people = num_people--;
 			  num_people--;
 			  ClearVariables();
   			}
@@ -666,14 +775,14 @@ int main(void)
     		  	var_d1 = 1;
   			} 
 		 }
-		 else if (ir1_value < THRESHOLD_2_1 && ir2_value > THRESHOLD_2_2 && ir2_flag == 0) //person has tripped second sensor
+		 else if (ir1_value < THRESHOLD_1_1 && ir2_value > THRESHOLD_2_1 && ir2_flag == 0) //person has tripped second sensor
 		 {
 			  ir2_count = 1;
 			  ir2_flag = 1;
  		    if(var_d1 == 1) //first sensor is already high and person is past it
   			{
-			  if(pressure_left == 1 && pressure_right == 1)
-			    num_people++;
+			  if (pressure_1 == 1 && pressure_2 == 1 && pressure_3 == 1)
+			    num_people = num_people++;
 			  num_people++;
     		  ClearVariables();
   			}
@@ -683,40 +792,60 @@ int main(void)
   			}
 		 }
 
-		 /*
-		 else if (ir1_value > THRESHOLD && ir2_value > THRESHOLD ) //both distance sensors high
-		{
-  			if(var_d1 == 1) //person has walked past first sensor already and there is someone directly behind him
- 			{
-			  ir2_flag = 1;
-			  num_people++;
-			  var_d1 = 1;
-			  var_d2 = 0;
-			  WritePeople();
-			  sprintf(ADC_Value, "%d", num_people);
-			  putsLCD(ADC_Value);
-			  putsLCD(" ");
-  			}
-  			else if(var_d2 == 1) //person has walked past second sensor and there is someone leaving behind him
-  			{
-			  ir1_flag = 1;
-    		  num_people--;
-			  var_d1 = 0;
-			  var_d2 = 1;
-			  WritePeople();
-			  sprintf(ADC_Value, "%d", num_people);
-			  putsLCD(ADC_Value);
-			  putsLCD(" ");
-  			}
-		}
-		*/
+
 		
+/******************************** second set of sensor code starts here *************************************/
+		
+		
+		 if (ir1_value_2 > THRESHOLD_1_2 && ir2_value_2 < THRESHOLD_2_2 && ir1_flag_2 == 0) //person has tripped first sensor
+		 {
+		 	//if the sensor hasn't been tripped already, then start the delay counter for decaying
+			  ir1_count_2 = 1;
+			  ir1_flag_2 = 1;
+			if(var_d2_2 == 1) //second sensor is already high and person has moved past it
+  			{
+			  num_people--;
+			  ClearVariables_2();
+  			}
+  			else if(var_d2_2 == 0) //new person OR two people have walked by another and the person is now leaving (1 sensor hit)
+  			{
+    		  	var_d1_2 = 1;
+  			} 
+		 }
+		 else if (ir1_value_2 < THRESHOLD_1_2 && ir2_value_2 > THRESHOLD_2_2 && ir2_flag_2 == 0) //person has tripped second sensor
+		 {
+			  ir2_count_2 = 1;
+			  ir2_flag_2 = 1;
+ 		    if(var_d1_2 == 1) //first sensor is already high and person is past it
+  			{
+			  num_people++;
+    		  ClearVariables_2();
+  			}
+ 			else if(var_d1_2 == 0) //new person
+  			{
+   			    var_d2_2 = 1;
+  			}
+		 }
+
+		if((var_d1 == 1 && var_d2_2 == 1 && var_d2 == 0 && var_d1_2 == 0) || (var_d1_2 == 1 && var_d2 == 1 && var_d1 == 0 && var_d2_2 == 0))
+		{
+		  num_people++;
+		  ClearVariables();
+		  ClearVariables_2();
+		}
+		else if((var_d2 == 1 && var_d1_2 == 1 && var_d1 == 0 && var_d2_2 == 0) || (var_d2_2 == 1 && var_d1 == 1 && var_d1_2 == 0 && var_d2 == 0))
+		{
+		  num_people--;
+		  ClearVariables();
+		  ClearVariables_2();
+		}
+
 		if (ir1_value < THRESHOLD_1_1 && ir1_flag == 1)
 		  ir1_flag = 0;
-		if (ir2_value < THRESHOLD_1_2 && ir2_flag == 1)
+		if (ir2_value < THRESHOLD_2_1 && ir2_flag == 1)
 		  ir2_flag = 0;
 
-		 if (ir1_value_2 < THRESHOLD_2_1 && ir1_flag_2 == 1)
+		 if (ir1_value_2 < THRESHOLD_1_2 && ir1_flag_2 == 1)
 		  ir1_flag_2 = 0;
 		if (ir2_value_2 < THRESHOLD_2_2 && ir2_flag_2 == 1)
 		  ir2_flag_2 = 0;
@@ -724,8 +853,7 @@ int main(void)
 	  }		
 		
 		 CheckFalseCounter();
-		 //CheckFalseCounter_2();
-	     //cmd2LCD(0x01);	   
-		 delay(30);	 
+		 CheckFalseCounter_2();	   
+		 delay(20);	 
 	}
 }
